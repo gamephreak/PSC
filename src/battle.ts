@@ -3,7 +3,7 @@ import {Side} from './side';
 
 export type GameType = 'Singles'|'Doubles'|'Triples'|'Rotation';
 
-export interface Battle {  // class
+export interface Battle {
   gameType: GameType;
 
   field: Field;

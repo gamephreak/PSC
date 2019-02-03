@@ -1,13 +1,15 @@
-import {ID} from './id';
+import {ID, Move} from 'pkmn';
 import {Pokemon} from './pokemon';
+import {PersistentEffect} from './effect';
 
-// export type SideCondition = ID&{__isSideCondition: true};
+export type SideCondition = ID&{__isSideCondition: true};
 
-export interface Side {  // class
-  // NOTE: volatiles and status go on POKEMON, not side
+export interface Side { 
+  state: 'preview' | 'move' | 'switch' | 'wait';
   pokemon: Pokemon[];
-  active?: number;  // index into pokemon, not set during team previow
-  conditions?: {
-    [sc: string]: {}
-  };  // SideCondition[]; TODO needs to be a more complex object
+  active: number;
+  conditions?: { [id: string]: PersistentEffect<SideCondition> }
+  fainted: {lastTurn: boolean, thisTurn: boolean};
+  lastMove?: Move; // TODO ID?
+  zMoveUsed?: boolean;
 }

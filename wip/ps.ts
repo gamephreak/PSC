@@ -11,29 +11,7 @@ type FaintedPokemon {
   effect?: Effect;
 }
 
-// {[id: string]: WeatherData}
-type WeatherData {
-  id: ID;
-  duration?: number;
-  source?: Pokemon;
-  sourcePosition?: number;
-}
 
-// {[id: string]: TerrainData}
-type TerrainData {
-  id: ID;
-  duration?: number;
-  source?: Pokemon;
-  sourcePosition?: number;
-}
-
-// {[id: string]: PseudoWeather}
-type PseudoWeather {
-  id: ID;
-  duration?: number;
-  source?: Pokemon;
-  sourcePosition?: number;
-}
 
 type EffectData {
   target?: Pokemon|Side|Battle;
@@ -50,8 +28,8 @@ interface Battle {
   activeTurns: number;
   cachedFormat: Format;
   comparePriority = (a:AnyObject, b:AnyObject) => number;
-  currentRequest: string;
   currentMod: string;
+  currentRequest: string;
   debugMode: boolean;
   effect: Effect;
   effectData: AnyObject;
@@ -104,8 +82,6 @@ interface Battle {
 
 interface ActiveMove extends BasicEffect, MoveData {
 	readonly effectType: 'Move'
-	typeMod: number
-	hit: number
 	ability?: Ability
 	aerilateBoosted?: boolean
 	allies?: Pokemon[]
@@ -117,7 +93,14 @@ interface ActiveMove extends BasicEffect, MoveData {
 	hasAuraBreak?: boolean
 	hasBounced?: boolean
 	hasSheerForce?: boolean
+	hit: number
 	isExternal?: boolean
+	/**
+	 * Has this move been boosted by a Z-crystal? Usually the same as
+	 * `isZ`, but hacked moves will have this be `false` and `isZ` be
+	 * truthy.
+	 */
+	isZPowered?: boolean
 	lastHit?: boolean
 	magnitude?: number
 	negateSecondary?: boolean
@@ -130,6 +113,7 @@ interface ActiveMove extends BasicEffect, MoveData {
 	stab?: number
 	statusRoll?: string
 	totalDamage?: number | false
+	typeMod: number
 	willChangeForme?: boolean
 	/**
 	 * Whether or not this move is a Z-Move that broke protect
@@ -137,84 +121,68 @@ interface ActiveMove extends BasicEffect, MoveData {
 	 * @type {boolean}
 	 */
 	zBrokeProtect?: boolean
-	/**
-	 * Has this move been boosted by a Z-crystal? Usually the same as
-	 * `isZ`, but hacked moves will have this be `false` and `isZ` be
-	 * truthy.
-	 */
-	isZPowered?: boolean
 }
 
-// {[id: string} => SideCondition}
-interface SideCondition {
-  target: Side;
-
-  id: ID;
-  duration?: number;
-  source?: Pokemon;
-  sourcePosition?: number;
-}
 
 // An object representing a single action that can be chosen.
 
 interface ChosenAction {
   choice: 'move' | 'switch' | 'instaswitch' | 'team' | 'shift' | 'pass'; // action type
-  pokemon?: Pokemon; // the pokemon doing the action
-  targetLoc?: number; //relative location of the target to pokemon (move action only)
-  moveid?: ID; // a move to use (move action only)
-  target?: Pokemon; // the target of the action
   index?: number; // the chosen index in Team Preview
-  side?: Side; // The action's side
   mega?: boolean; // true if megaing or ultra bursting
-  zmove?: string; // if zmoving, the name of the zmove
+  moveid?: ID; // a move to use (move action only)
+  pokemon?: Pokemon; // the pokemon doing the action
   priority?: number; 
+  side?: Side; // The action's side
+  target?: Pokemon; // the target of the action
+  targetLoc?: number; //relative location of the target to pokemon (move action only)
+  zmove?: string; // if zmoving, the name of the zmove
 }
 // An object representing what the player has chosen to happen.
 interface Choice {
+  actions: ChosenAction[]; //  array of chosen actions
   cantUndo: boolean; // true if the choice can't be cancelled because of the maybeTrapped issue
   error: string; // contains error text in the case of a choice error
-  actions: ChosenAction[]; //  array of chosen actions
-  forcedSwichesLeft: number; // number of switches left that need to be performed
   forcedPassesLeft: number; // number of passes left that need to be performed
-  switchIns: Set<number>; // indexes of pokemon chosen to switch in
-  zMove: boolean; // true if a Z-move has already been selected
+  forcedSwichesLeft: number; // number of switches left that need to be performed
   mega: boolean;// true if a mega evolution has already been selected
+  switchIns: Set<number>; // indexes of pokemon chosen to switch in
   ultra: boolean; // true if an ultra burst has already been selected
+  zMove: boolean; // true if a Z-move has already been selected
 }
 
 interface Side {
-  battle: Battle;
-  n: number;
-  name: string;
-  avatar: string;
-  pokemon: Pokemon[];
   active: Pokemon[]; // [Pokemon] | [Pokemon, Pokemon] | [Pokemon, Pokemon, Pokemon]
-  sideConditions: AnyObject;
-  pokemonLeft: number;
-  faintedLastTurn: boolean;
-  faintedThisTurn: boolean;
-  zMoveUsed: boolean;
+  avatar: string;
+  battle: Battle;
   choice: Choice;
   currentRequest: 'move' | // begining of every turn
     'switch' | // end of turn with fainted or mid turn for u-turn, BP, etc
     'teampreview' | // begining of battle
     ''; // wait for other persons switch
-  maxTeamSize: number;
-  id: 'p1' | 'p2';
+  faintedLastTurn: boolean;
+  faintedThisTurn: boolean;
   foe: Side;
-  team: PokemonSet[];
+  id: 'p1' | 'p2';
   lastMove?: Move;
+  maxTeamSize: number;
+  n: number;
+  name: string;
+  pokemon: Pokemon[];
+  pokemonLeft: number;
+  //sideConditions: AnyObject;
+  team: PokemonSet[];
+  zMoveUsed: boolean;
 }
 
-
 interface MoveSlot {
-  move: string;
-  id: ID;
-  pp: number;
-  maxpp: number;
-  target?: string;
+  disabledSource?: string;
   disabled: string|boolean;
-  disabeldSource?: string;
+  id: ID;
+  maxpp: number;
+  move: string;
+  pp: number;
+  target?: string;
   used: boolean;
   virtual?: boolean;
 
@@ -366,4 +334,40 @@ interface Pokemon {
   maxhp: number;
   hp: number;
   showCure: boolean;
+}
+
+///////////////////////
+
+// {[id: string]: WeatherData}
+type WeatherData {
+  id: ID;
+  duration?: number;
+  source?: Pokemon;
+  sourcePosition?: number;
+}
+
+// {[id: string]: TerrainData}
+type TerrainData {
+  id: ID;
+  duration?: number;
+  source?: Pokemon;
+  sourcePosition?: number;
+}
+
+// {[id: string]: PseudoWeather}
+type PseudoWeather {
+  id: ID;
+  duration?: number;
+  source?: Pokemon;
+  sourcePosition?: number;
+}
+
+// {[id: string} => SideCondition}
+interface SideCondition {
+  target: Side;
+
+  id: ID;
+  duration?: number;
+  source?: Pokemon;
+  sourcePosition?: number;
 }
