@@ -1,7 +1,6 @@
 interface AnyObject {[k: string]: any}
 
 type Effect = Ability | Item | ActiveMove | Template | PureEffect | Format
-type GameType = 'singles' | 'doubles' | 'triples' | 'rotation'
 
 type FaintedPokemon {
   target: Pokemon;
@@ -10,65 +9,118 @@ type FaintedPokemon {
 }
 
 interface Battle {
-  LEGACY_API_DO_NOT_USE: boolean;
-  NOT_FAILURE: '';
+  // Use pkmn.Format, then format.id
+  formatid: ID;
+  gameType: 'singles' | 'doubles' | 'triples' | 'rotation'
+  p1: Side;
+  p2: Side;
+
+  // Optional?
+  prngSeed: [number, number, number, number];
+  // Not strictly necessary, but useful
+  turn: number;
+  // Need for baton pass/fainted/uturn etc
+  midTurn: boolean;
+  // Everything received so far
+  log: string[];
+
+  // EASY: to infer from logs, rename to just 'staleWarned' given we're not using staleWarned
+  firstStaleWarned: boolean;
+  // EASY: rename to 'state' and use similar enum as Side? -> can't really be in 'wait' state ever
+  currentRequest: string; 
+  
+  // MEDIUM: Incremented after every switch activated on switch (no faint). Can we instead just leave at 0/1?
   abilityOrder: number;
-  active: boolean;
+  // ???: Required for Copycat. previous activeMove provided it didn't fail
+  lastMove?: Move;
+  // ???: Index into log of when last move occurred (need to calculate). Do we always know?
+  lastMoveLine: number;
+
+  // HARD: Required for gen1 Counter mechanics (maybe inaccurate because will get capped by total pokemons HP?)
+  lastDamage: number;
+
+  //* Field ***********************
+
+  terrain: Terrain;
+  terrainData: AnyObject;
+  weather: Weather;
+  weatherData: AnyObject;
+  pseudoWeather: AnyObject;
+
+  //* ??? ***********************
+  
+  // TODO I think none of these can happen because we can't be between events?, MUST CONFIRM
+  effect: Effect;
+  effectData: AnyObject;
+  event: AnyObject; // {target?: Pokemon, source?: Pokemon, modifier?: number, ceilModifier?: number }
+  events?: AnyObject;
+
+  // TODO I don't think we need to care about faint queue because theres no choice/state position in between fainting? (only after!). CONFIRM
+  faintQueue: FaintedPokemon[];
+ 
+  // TODO I think we can have an active move (if state = switch, uturn/BP/healing wish etc is active?)
   activeMove?: ActiveMove;
   activePokemon?: Pokemon;
   activeTarget?: Pokemon;
-  activeTurns: number;
-  cachedFormat: Format;
-  comparePriority = (a:AnyObject, b:AnyObject) => number;
-  currentMod: string;
-  currentRequest: string;
+
+  //* REMOVED ***********************
+
+  //* Internal
+  LEGACY_API_DO_NOT_USE: boolean;
+  NOT_FAILURE: '';
   debugMode: boolean;
-  effect: Effect;
-  effectData: AnyObject;
-  ended: boolean;
-  event: AnyObject; // {target?: Pokemon, source?: Pokemon, modifier?: number, ceilModifier?: number }
-  eventDepth: number;
-  events?: AnyObject;
-  faintQueue: FaintedPokemon[];
-  firstStaleWarned: boolean;
-  format: ID;
-  formatData: AnyObject;
-  formatid: ID;
-  gameType: GameType;
-  gen: Generation;
-  id: string;
-  inputLog: string[];
-  itemData: AnyObject;
-  lastDamage: number;
-  lastMove?: Move;
-  lastMoveLine: number;
-  lastUpdate: number;
-  log: string[];
-  messageLog: string[];
-  midTurn: boolean;
-  p1: Side;
-  p2: Side;
-  prng: PRNG;
-  prngSeed: [number, number, number, number];
-  pseudoWeather: AnyObject;
-  rated: boolean|string;
-  reportExactHP: boolean;
-  reportPercentages: boolean;
+  comparePriority = (a:AnyObject, b:AnyObject) => number;
   send: (type: string, data: string | string[]) => void;
-  sentEnd: boolean;
-  sentLogPos: number;
-  sides: [Side, Side];
-  staleWarned = boolean;
-  started: boolean;
+  reportExactHP: boolean;
+  prng: PRNG;
   supportCancel: true;
-  teamGenerator: null; // TODO;
-  terrain: Terrain;
-  terrainData: AnyObject;
-  turn: number;
-  weather: Weather;
-  weatherData: AnyObject;
+  //* We only have one log, can't get other players choices? 
+  inputLog: string[];
+  //* Never in the middle of an event
+  eventDepth: number;
+
+  //* Inside format.gen
+  gen: Generation;
+  //* No random teams
+  teamGenerator: null; // etc...
+  //* Inherent in format/rules or excluded (no random teams)
+  formatData: AnyObject;
+  //* The format from formatID;
+  format: null; // etc...
+  //* = format
+  cachedFormat: Format;
+  //* Just [p1, p2] side
+  sides: [Side, Side];
+  //* Always true
+  reportPercentages: boolean;
+  //* Battle is over if winner so no point
   winner: string;
+  //* Ditto - not interested in ended/sentEnd. active == !ended pretty much?
+  ended: boolean;
+  sentEnd: boolean;
+  active: boolean;
+  //* Always true/can infer from turn number?
+  started: boolean;
+  //* always === '' anyway
+  id: string;
+  //* no mods other then what is inferred from gen
+  currentMod: string;
+  //* Don't care
+  rated: boolean|string;
+  //* Always = 0, unused?
+  lastUpdate: number;
+  //* Always = [], unused in favor of inputLog?
+  messageLog: string[];
+  //* Equal to this.log length when observed
+  sentLogPos: number;
+  //* Battles all have endless battle anyway
+  staleWarned = boolean;
+  //* ??? Unused? Pokemon has itemData instead?
+  itemData: AnyObject;
+  //* Constant table of Type -> Move Name in data/scripts.js in gen7
   zMoveTable: {[k: string]: string};
+  // Always = 0 after started = true, used for parity with Pokemon? (see itemData for similar?)
+  activeTurns: number;
 }
 
 interface ActiveMove extends BasicEffect, MoveData {

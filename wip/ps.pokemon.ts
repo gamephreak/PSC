@@ -13,6 +13,7 @@ interface MoveSlot {
 
 }
 interface Pokemon {
+  //* ??? ***********************
   set: PokemonSet;
   side: Side;
   battle: Battle;
@@ -159,4 +160,5 @@ interface Pokemon {
   maxhp: number;
   hp: number;
   showCure: boolean;
+  //* REMOVED ***********************
 }
