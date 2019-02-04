@@ -10,6 +10,6 @@ export interface Side {
   active: number;
   conditions?: { [id: string]: PersistentEffect<SideCondition> }
   fainted: {lastTurn: boolean, thisTurn: boolean};
-  lastMove?: Move; // TODO ID?
+  lastMove?: ID;
   zMoveUsed?: boolean;
 }
