@@ -11,6 +11,8 @@ export interface SideConditionData extends PersistentEffect<SideCondition> {
   // Positions affected by a future move (Doom Desire / Future Sight).
   positions?:
       {[position: number]: {duration: number; source: Pokemon, move: ID;}};
+  // The number of layers (Spikes / Toxic Spikes).
+  layers?: number;
 }
 
 export interface Side {

@@ -4,20 +4,32 @@ import {PersistentEffect} from './effect';
 
 export type VolatileStatus = ID&{__isVolatile: true};
 
-// TODO
 export interface VolatileStatusData extends PersistentEffect<VolatileStatus> {
-  damage?: number;  // Counter / Mirror Coat / Metal Burst, partialtrappinglock
-  hp?: number;      //  Substitute
-  multiplier?: number;    // Fury Cutter / Helping Hand / Autotomize
-  hitCount?: number;      // Ice Ball / Rollout
-  position?: number;      // Mirror Coat
-  gotHit?: boolean;       // Shell Trap
-  layers?: number;        // Stockpile
-  time?: number;          // Confusion
-  counter?: number;       // residualdmg (RBY Toxic)
-  locked?: Pokemon;       // partialtrappinglock (RBY Wrap)
-  trueDuration?: number;  // Outrage / Thrash / Petal Dance
-  lostFocus?: boolean;    // Focus Punch
+  // The true duration of a locked move where the duration could be reset
+  // (Outrage / Thrash / Petal Dance).
+  lockedDuration?: number;
+  // The substitute's HP (Substitute).
+  hp?: number;
+  // The muliplier to use (Fury Cutter / Helping Hand / Autotomize)
+  multiplier?: number;
+  // Tracks the number of times this move has hit (Ice Ball / Rollout).
+  hitCount?: number;
+  // The number of layers (Stockpile).
+  layers?: number;
+  // The position to target (Mirror Coat).
+  position?: number;
+  // Whether the Pokemon got hit while this status was active (Shell Trap).
+  hit?: boolean;
+  // The amount of time in turns left for this status (Confusion).
+  time?: number;
+  // RBY: Counter for tracking residual damage accumulation (Toxic Glitch).
+  counter?: number;
+  // The damage for this status (Counter / Mirror Coat / Metal Burst).
+  damage?: number;
+  // RBY: The Pokemon locked by the partialtrappinglock (Wrap etc).
+  locked?: Pokemon;
+  // Whether the Pokemon lost its focus (Focus Punch).
+  lostFocus?: boolean;
 }
 
 export interface StatusData {
@@ -126,6 +138,14 @@ export interface Pokemon {
   // moveResult will be undefined if this Pokemon has not moved yet
   // (Stomping Tantrum / Truant).
   moveResult?: {lastTurn?: MoveResult, thisTurn?: MoveResult};
+  // The ID of the move this Pokemon made this turn, if any (Fusion Flare/Bolt,
+  // RBY Mirror Move).
+  moveThisTurn?: ID;
+  // The ID of the last move made by this Pokemon, if it differs from
+  // moveThisTurn (DPP Healing Wish/Lunar Dance/Baton Pass/U-turn).
+  lastMove?: ID;
+  // The last damage inflicted by this Pokemon's move (Shell Bell / RBY trap).
+  lastDamage: number;
   // The turn number this Pokemon was dragged in (RBY / GSC).
   draggedIn?: number;
   // Whether this Pokemon has used an item this turn (Pickup).
@@ -139,4 +159,18 @@ export interface Pokemon {
   showCure?: boolean;
   // Whether this Pokemon has been damaged this turn (Assurance).
   hurtThisTurn: boolean;
+  // Whether or not this Pokemon's substitute just fainted
+  // (RBY Selfdestruct Glitch).
+  subFainted?: boolean;
+  // Whether this Pokemon has been newly switched-in (Payback / Helping Hand /
+  // Core Enforcer).
+  newlySwitched?: boolean;
+  // Additional Type added to this Pokemon (Forest's Curse / Trick-or-Treat).
+  addedType?: Type;
+  // All the Pokemon this Pokemon has been attacked by since becoming active
+  // (Revenge / Avalanche)
+  attackedBy:
+      Array<{source: Pokemon, damage: number, thisTurn: boolean, move?: ID}>;
+
+  // TODO Endless Battle Clause
 }

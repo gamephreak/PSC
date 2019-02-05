@@ -82,24 +82,20 @@ interface Pokemon {
   usedItemThisTurn?: boolean;
   // Assurance
   hurtThisTurn: boolean;
-
-
-// TODO vvvvvvvvvvvvvvv
-
-  // Shell Bell / RBY Partial Trapping
-  lastDamage: number;
+  // RBY Selfdestruct Glitch
+  subFainted?: boolean;
+  // Payback / Core Enforcer / Helping Hand
+  newlySwitched: boolean;
   // Fusion Flare / Fusion Bolt / RBY Mirror Move
   moveThisTurn?: ID;
+  // Shell Bell / RBY Partial Trapping
+  lastDamage: number;
   // Forest's Curse / Trick-or-Treat
   addedType?: Type;
   // Revenge / Avalanche
   attackedBy: {source: Pokemon, damage: number, thisTurn: boolean, move?: ID}[];
-  // DPP Healing Wish/Lunar Dance/Baton Pass/U-turn (moveThisTurn)
-  lastMove?: ID;
-  // Payback / Core Enforcer / Helping Hand
-  newlySwitched: boolean;
-  // RBY Selfdestruct Glitch
-  subFainted?: boolean;
+
+
 
   //* WIP ***********************
   knownType?: boolean; // TODO
