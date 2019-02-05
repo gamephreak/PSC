@@ -47,7 +47,7 @@ interface Pokemon {
   item?: ID;
   ability?: ID;
   hpType: Type;
-  hpType: number;
+  hpPower: number;
 
   stats: StatsTable;
   modifiedStats: StatsTable; // Gen1 only

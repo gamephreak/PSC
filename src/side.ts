@@ -24,8 +24,9 @@ export interface Side {
   state: 'preview'|'move'|'switch'|'wait';
   // The team of Pokemon the player for this Side brought to battle (1 - 6).
   readonly pokemon: Readonly<Pokemon[]>;
-  // The index into pokemon of the active Pokemon (undefined for Team Preview).
-  active?: number;
+  // The index into pokemon of the active Pokemon (undefined for Team Preview),
+  // can be of length 1-3 depending on the Battle's gameType.
+  active?: [number];
   // The conditions active on this Side.
   conditions?: {[id: string]: SideConditionData};
 
