@@ -1,3 +1,16 @@
+interface SideConditionData extends PersistentEffect<SideCondition> {
+  layers?: number; // Spikes / Toxic Spikes
+  sources: Pokemon[]; // pursuit
+  positions?: {[position: number]: {
+    duration: number;
+    source: Pokemon,
+    move: ID;
+    moveData: any; // etc..
+
+  }}; // futuremove (Future Sight/Doom Desire)
+  sourceEffect: ActiveMove; // TODO
+}
+
 interface Side {
   // The 1-6 pokemon on the players team
   pokemon: Pokemon[];
@@ -21,7 +34,7 @@ interface Side {
     ''; // wait for other persons switch
 
   //* REMOVED ***********************
- 
+
   //* Visual only
   avatar: string;
   //* Only support single battles, so active can be an index into Pokemon
@@ -52,7 +65,7 @@ interface ChosenAction {
   mega?: boolean; // true if megaing or ultra bursting
   moveid?: ID; // a move to use (move action only)
   pokemon?: Pokemon; // the pokemon doing the action
-  priority?: number; 
+  priority?: number;
   side?: Side; // The action's side
   target?: Pokemon; // the target of the action
   targetLoc?: number; //relative location of the target to pokemon (move action only)

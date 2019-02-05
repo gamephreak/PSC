@@ -2,112 +2,126 @@ import {PokemonSet, Status, Gender} from 'pkmn';
 
 type MoveResult =  'Skipped'|'Failure'|'Success';
 
-// TODO FUTURE SIGHT?
-interface Pokemon {
-  set: PokemonSet;
-  moveResult = {lastTurn?: MoveResult, thisTurn?: MoveResult};
-  status: Status;
-  details: string;
-  fainted: boolean;
-  transformed: boolean;
-  volatiles: {[id: string}: VolatileStatus}; // TODO
-
-  // Not just inferred from set/species because can change!
-  hp: number;
-  name: string;
-  species: ID; // = species *name* id
-  item: ID;
-  ability: ID;
-  level: number;
-  gender: Gender;
-  happiness: number;
-  pokeball: string;
-  hpType: Type;
-  stats: StatsTable;
-  boosts: BoostsTable;
-  moveSlots: MoveSlot[];
-  weight: number;
-
-  original: { moveSlots: MoveSlot[] };
-  
-  //* WIP ***********************
-
-  // TODO can we replace by mapping over moveslots and looking for 'hidden'?
-  maybeDisabled: boolean; // Imprison was used
-
-   original: {
-    // TODO is everything below not just obtainable from set?
-    ability: ID;
-    // Transform copies IVs in gen 4 and earlier, so we track the base IVs/HP-type/power
-    stats: StatsTable; 
-    ivs: StatsTable;
-    //* Can calculate.
-    //hpType: Type;
-    //hpPower: number;
-  };
+export interface VolatileStatusData extends PersistentEffect<VolatileStatus> {
+  damage?: number; // Counter / Mirror Coat / Metal Burst, partialtrappinglock
+  hp?: number; //  Substitute
+  multiplier?: number; // Fury Cutter / Helping Hand / Autotomize
+  hitCount?: number; // Ice Ball / Rollout
+  position?: number; // Mirror Coat
+  gotHit?: boolean; // Shell Trap
+  layers?: number; // Stockpile
+  time?: number; // Confusion
+  counter?: number; // residualdmg (RBY Toxic)
+  locked?: Pokemon; // partialtrappinglock (RBY Wrap)
+  trueDuration?: number; // Outrage / Thrash / Petal Dance
+  lostFocus?: boolean; // Focus Punch
 
   //* ??? ***********************
- 
+
+  //*  Mystery Berry as Leppa Berry, not needed between decisions
+  moveSlot?: MoveSlot;
+}
+
+interface StatusData {
+  type: Status;
+  counter?: number;
+
+  //* REMOVED ***********************
+  time?: number; // Sleep TODO
+  startTime?: number; // Sleep TODO
+  stage?: number; // Toxic
+}
+
+interface Pokemon {
+  set: PokemonSet;
+  details: string;
+  status?: StatusData;
+  volatiles: {[id: string}: VolatileStatusData}; // TODO
+  hp: number;
+
+  // Usually from set/Species but can change over the battle.
+  species: ID; // = species *name* id
+  weight: number;
+  type1: Type;
+  type2?: Type;
+  item?: ID;
+  ability?: ID;
+  hpType: Type;
+  hpType: number;
+
+  stats: StatsTable;
   modifiedStats: StatsTable; // Gen1 only
+  boosts: BoostsTable;
+  moveSlots: MoveSlot[];
 
-  lastItem: string; // ID
-  lastMove?: Move;
-  lastDamage: number;
- 
-  moveThisTurn: string|boolean;
-  hurtThisTurn: boolean;
-  usedItemThisTurn: boolean;
+  trapped?: boolean|'hidden';
+  maybeTrapped?: boolean;
 
-  trapped: boolean | 'hidden';
-  // TODO is this not just trapped == 'hidden'?
-  maybeTrapped: boolean;
+  activeTurns?: number;
+  abilityOrder?: number;
+
+  canMegaEvo?: ID;
+  canUltraBurst?: ID;
+  // Zorua / Zoroak
   illusion?: Pokemon;
+  // Ditto / Smeargle / Mew
+  transformed: boolean;
+  // Mimikyu
+  busted?: boolean;
+// Imprison
+  maybeDisabled: boolean;
+  // Stomping Tantrum / Truant
+  moveResult?: {lastTurn?: MoveResult, thisTurn?: MoveResult};
+  // RBY/GSC Statuses
+  draggedIn?: number; // Turn number
+  // Harvest / Pickup / Recycle
+  lastItem?: ID;
+  // Belch
+  ateBerry?: boolean;
+  // Pickup (Doubles/Triples)
+  usedItemThisTurn?: boolean;
+  // Assurance
+  hurtThisTurn: boolean;
 
-  faintQueued: boolean;
 
-  ateBerry: boolean;
+// TODO vvvvvvvvvvvvvvv
 
-  switchFlag: boolean|string;
-  forceSwitchFlag: boolean; // |string?
-  switchCopyFlag: boolean; // |string?
-  draggedIn?: number;
+  // Shell Bell / RBY Partial Trapping
+  lastDamage: number;
+  // Fusion Flare / Fusion Bolt / RBY Mirror Move
+  moveThisTurn?: ID;
+  // Forest's Curse / Trick-or-Treat
+  addedType?: Type;
+  // Revenge / Avalanche
+  attackedBy: {source: Pokemon, damage: number, thisTurn: boolean, move?: ID}[];
+  // DPP Healing Wish/Lunar Dance/Baton Pass/U-turn (moveThisTurn)
+  lastMove?: ID;
+  // Payback / Core Enforcer / Helping Hand
   newlySwitched: boolean;
-  beingCalledBack: boolean;
-
-  attackedBy: {source: Pokemon, damage: number, thisTurn: boolean, move?: string}[];
-  isActive: boolean;
-  activeTurns: number;
-  isStarted: boolean; // Have this pokemon's Start events run yet?
-  duringMove: boolean;
- 
-  apparentType: string; // Type1(/Type2)
-  types: Type[]; // type1, type2
-  addedType: Type;
-  knownType: boolean;
-
-  canMegaEvo = string | null | undefined;
-  canUltraBurst = string | null | undefined;
-
+  // RBY Selfdestruct Glitch
   subFainted?: boolean;
 
+  //* WIP ***********************
+  knownType?: boolean; // TODO
+  apparentType?: string; // TODO Type1(/Type2)
+
+  switchFlag: boolean|string;
+  switchCopyFlag: boolean; // |string?
+  forceSwitchFlag: boolean; // |string? // Eject Button/Red Card
+
+  // Pursuit
+  beingCalledBack: boolean;
+  // Internal? Used by Trace
+  isStarted: boolean;
+
+  // Endless Battle
   isStale: number;
+  isStaleSourc: string;
   isStaleCon: number;
   isStaleHP: number;
   isStalePPTurns: number;
   staleWarned: boolean;
- 
-  statusData: AnyObject;
-  abilityData: {[k: string]: string | Pokemon};
-  itemData: {[k: string]: string | Pokemon};
-  speciesData: AnyObject;
 
-  showCure: boolean;
-  speed: number;
-  abilityOrder: number;
- 
-  // TODO forme change/transform?
-  baseTemplate: Template; // Species
-  template: Template; // Species
 
   //* REMOVED ***********************
   //* Backrefs
@@ -121,6 +135,8 @@ interface Pokemon {
   //* = Species
   species: string; // TODO not template, but species name!
   speciesid: ID;
+  baseTemplate: Template;
+  template: Template;
   //* not relevant?
   heightm: number;
   //* Can calculate
@@ -129,6 +145,31 @@ interface Pokemon {
   position: number;
   //* can calculate from base stats
   maxhp: number;
+  //* unnecessary? hp == 0;
+  fainted: boolean;
+  //* No faint queuing (between turns)
+  faintQueued: boolean;
+  // Can't change.
+  baseIvs: number;
+  baseHpType: Type;
+  //* Can calculate from IVs
+  baseHpPower: number;
+  //* Unused (always false)
+  duringMove: boolean;
+  //* Already tracked in Side
+  isActive: boolean;
+  //* Can caclulate from boosted + modified speed and trickroom
+  speed: number;
+  //* From set
+  level: number;
+  gender: Gender;
+  happiness: number;
+
+  //* TODO Seperate fields
+  statusData: AnyObject;
+  abilityData: {[k: string]: string | Pokemon};
+  itemData: {[k: string]: string | Pokemon};
+  speciesData: AnyObject;
 }
 
 // TODO
@@ -149,12 +190,7 @@ interface MoveSlot {
   maxpp: number;
   used?: boolean;
   virtual?: boolean; // If transformed
-
-
-  //* ??? ***********************
-
-  disabled: boolean | 'hidden';
-
+  disabled: boolean|'hidden'; // we can't tell if disabled 'hidden', need to rely on maybeDisabled.
 
   //* REMOVED ***********************
   //* Move name
@@ -163,6 +199,37 @@ interface MoveSlot {
   target?: string;
   //* only set if choicelocked
   disabledSource?: string;
+}
+
+// TODO
+export interface EffectData {
+  activated: boolean;
+  busted: boolean;
+  counter: number;
+  forme: ??;
+  gaveUp: boolean;
+  hitCount: number;
+  lastDamage: number;
+  lastDamageSource: Pokemon;
+  lastMove: ID;
+  layers: number;
+  move: ID;
+  mulitipler: number;
+  numConsecutive: number;
+  position: ??;
+  positions: ??[];
+  positions: boolean[];
+  prankserBoosted = ??;
+  source: Pokemon;
+  sourceEffect: ???;
+  sources: Pokemon[];
+  stage: number;
+  startTime: number;
+  target: Pokemon;
+  time: number;
+  totalDamage: number;
+  trueDuration: number;
+  wishes: number;
 }
 
 /**

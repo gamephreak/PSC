@@ -16,25 +16,20 @@ interface Battle {
   p2: Side;
 
   // Optional?
-  prngSeed: [number, number, number, number];
   // Not strictly necessary, but useful
   turn: number;
   // Need for baton pass/fainted/uturn etc
   midTurn: boolean;
-  // Everything received so far
-  log: string[];
 
   // EASY: to infer from logs, rename to just 'staleWarned' given we're not using staleWarned
   firstStaleWarned: boolean;
   // EASY: rename to 'state' and use similar enum as Side? -> can't really be in 'wait' state ever
-  currentRequest: string; 
-  
+  currentRequest: string;
+
   // MEDIUM: Incremented after every switch activated on switch (no faint). Can we instead just leave at 0/1?
   abilityOrder: number;
   // ???: Required for Copycat. previous activeMove provided it didn't fail
   lastMove?: Move;
-  // ???: Index into log of when last move occurred (need to calculate). Do we always know?
-  lastMoveLine: number;
 
   // HARD: Required for gen1 Counter mechanics (maybe inaccurate because will get capped by total pokemons HP?)
   lastDamage: number;
@@ -48,7 +43,7 @@ interface Battle {
   pseudoWeather: AnyObject;
 
   //* ??? ***********************
-  
+
   // TODO I think none of these can happen because we can't be between events?, MUST CONFIRM
   effect: Effect;
   effectData: AnyObject;
@@ -57,11 +52,17 @@ interface Battle {
 
   // TODO I don't think we need to care about faint queue because theres no choice/state position in between fainting? (only after!). CONFIRM
   faintQueue: FaintedPokemon[];
- 
+
   // TODO I think we can have an active move (if state = switch, uturn/BP/healing wish etc is active?)
   activeMove?: ActiveMove;
   activePokemon?: Pokemon;
   activeTarget?: Pokemon;
+
+  // Everything received so far
+  log: string[];
+  // ???: Index into log of when last move occurred (need to calculate). Do we always know?
+  // Surely this never matters midturn!
+  lastMoveLine: number;
 
   //* REMOVED ***********************
 
@@ -74,7 +75,7 @@ interface Battle {
   reportExactHP: boolean;
   prng: PRNG;
   supportCancel: true;
-  //* We only have one log, can't get other players choices? 
+  //* We only have one log, can't get other players choices?
   inputLog: string[];
   //* Never in the middle of an event
   eventDepth: number;
@@ -121,6 +122,8 @@ interface Battle {
   zMoveTable: {[k: string]: string};
   // Always = 0 after started = true, used for parity with Pokemon? (see itemData for similar?)
   activeTurns: number;
+
+  midTurn?: boolean;  // TODO can we not just tell midTurn from state?
 }
 
 interface ActiveMove extends BasicEffect, MoveData {

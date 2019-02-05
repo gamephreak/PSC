@@ -1,7 +1,17 @@
-selfSwitch: copyVolatile
-volatiles.moveSlot
-futuremove
-iceball.hitcount
-shelltrap.gotHit
-
 linkedPokemon/linkedStatus
+
+addVolatile(status, source, sourceEffect, linkedStatus);
+// linkedStatus boolean|any === 'trapper' (never boolean or anything else!)
+// sourceEffect = move | zPower
+
+addSideCondition(status, source, sourceEffect, linkedStatus);
+setTerrain(status, source, sourceEffect);
+addPseudoWeather(status, source, sourceEffect);
+setWeather(status, source, sourceEffect); '= move'
+// sourceEffect = ActiveMove
+
+
+effectData!
+
+statusData!
+
