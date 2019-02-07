@@ -191,7 +191,7 @@ interface MoveSlot {
   //* REMOVED ***********************
   //* Move name
   move: string;
-  //* Just move.Target
+  //* Just move.Target unless curse + ghost!
   target?: string;
   //* only set if choicelocked
   disabledSource?: string;

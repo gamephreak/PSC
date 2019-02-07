@@ -30,6 +30,8 @@ export interface VolatileStatusData extends PersistentEffect<VolatileStatus> {
   locked?: Pokemon;
   // Whether the Pokemon lost its focus (Focus Punch).
   lostFocus?: boolean;
+  // Pokemon's original type (Roost).
+  typeWas?: Type;
 }
 
 export interface StatusData {
@@ -41,6 +43,10 @@ export interface StatusData {
   // The total duration the Sleep status will last (counter is reset to this
   // on switch-in in BW).
   duration?: number;
+
+  // TODO
+  target?: Pokemon;
+  source? Pokemon;
 }
 
 export interface MoveSlot {
