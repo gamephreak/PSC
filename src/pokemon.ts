@@ -46,7 +46,8 @@ export interface StatusData {
   // Turns spent using Sleep Talk/Snore immediately before swithing out while
   // asleep (ADV Sleep mechanics).
   skipped?: number;
-  // The source of the status.
+  // The source of the status - required to determine when to activate the Sleep
+  // Clause Mod.
   source?: Pokemon;
 }
 
@@ -64,8 +65,6 @@ export interface MoveSlot {
   // Whether or not this move has been disabled. This may be 'hidden' if the
   // Pokemon is maybeDisabled but hasn't tried the move yet (Imprison).
   disabled: boolean|'hidden';
-  // Effect which caused this Slot to be disabled.
-  disabledSource: string;
 }
 
 // The result of a move used by this Pokemon:
