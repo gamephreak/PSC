@@ -43,10 +43,11 @@ export interface StatusData {
   // The total duration the Sleep status will last (counter is reset to this
   // on switch-in in BW).
   duration?: number;
-
-  // TODO
-  target?: Pokemon;
-  source? Pokemon;
+  // Turns spent using Sleep Talk/Snore immediately before swithing out while
+  // asleep (ADV Sleep mechanics).
+  skipped?: number;
+  // The source of the status.
+  source?: Pokemon;
 }
 
 export interface MoveSlot {
@@ -63,6 +64,8 @@ export interface MoveSlot {
   // Whether or not this move has been disabled. This may be 'hidden' if the
   // Pokemon is maybeDisabled but hasn't tried the move yet (Imprison).
   disabled: boolean|'hidden';
+  // Effect which caused this Slot to be disabled.
+  disabledSource: string;
 }
 
 // The result of a move used by this Pokemon:
