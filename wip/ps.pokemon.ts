@@ -1,25 +1,32 @@
-import {PokemonSet, Status, Gender} from 'pkmn';
+import {PokemonSet, Status, Gender. Type} from 'pkmn';
 
 type MoveResult =  'Skipped'|'Failure'|'Success';
 
 export interface VolatileStatusData extends PersistentEffect<VolatileStatus> {
   damage?: number; // Counter / Mirror Coat / Metal Burst, partialtrappinglock
   hp?: number; //  Substitute
-  multiplier?: number; // Fury Cutter / Helping Hand / Autotomize
-  hitCount?: number; // Ice Ball / Rollout
   position?: number; // Mirror Coat
   gotHit?: boolean; // Shell Trap
-  layers?: number; // Stockpile
-  time?: number; // Confusion
-  counter?: number; // residualdmg (RBY Toxic)
   locked?: Pokemon; // partialtrappinglock (RBY Wrap)
   trueDuration?: number; // Outrage / Thrash / Petal Dance
   lostFocus?: boolean; // Focus Punch
+  typeWas?: Type; // Roost
+
+  lastMove?: ID; // Metronome
+  move?: ID; // Disable / Encore + Choice / Locked / Two-Turn
+
+  numConsecutive?: number; // Metronome
+  hitCount?: number; // Ice Ball / Rollout
+  layers?: number; // Stockpile
+  time?: number; // Confusion
+  counter?: number; // residualdmg (RBY Toxic)
+  multiplier?: number; // Fury Cutter / Helping Hand / Autotomize
 
   //* ??? ***********************
 
   //*  Mystery Berry as Leppa Berry, not needed between decisions
   moveSlot?: MoveSlot;
+  // target REMOVED
 }
 
 interface StatusData {

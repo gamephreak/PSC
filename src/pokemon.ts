@@ -4,6 +4,7 @@ import {PersistentEffect} from './effect';
 
 export type VolatileStatus = ID&{__isVolatile: true};
 
+// TODO merge counters/moves/etc?
 export interface VolatileStatusData extends PersistentEffect<VolatileStatus> {
   // The true duration of a locked move where the duration could be reset
   // (Outrage / Thrash / Petal Dance).
@@ -32,6 +33,12 @@ export interface VolatileStatusData extends PersistentEffect<VolatileStatus> {
   lostFocus?: boolean;
   // Pokemon's original type (Roost).
   typeWas?: Type;
+  // The move this status applies to (Taunt / Encore, Locking)
+  move?: ID;
+  // The last move used by the Pokemon while under this status (Metronome).
+  lastMove?: ID;
+  // The number of consecutive times the lastMove was used (Metronome).
+  numConsecutive?: number;
 }
 
 export interface StatusData {

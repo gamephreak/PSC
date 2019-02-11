@@ -9,12 +9,10 @@ export interface SideConditionData extends PersistentEffect<SideCondition> {
   // Sources of the side condition, in the case of multiple (Pursuit).
   sources?: Pokemon[];  // TODO is this necessary?
   // Positions affected by a future move (Doom Desire / Future Sight / Wish).
-  positions?: {[position: number]: {
-    duration: number;
-    source?: Pokemon;
-    move?: ID;
-    hp?: number;
-  }};
+  positions?: {
+    [position: number]:
+        {duration: number; source?: Pokemon; move?: ID; hp?: number;}
+  };
   // The number of layers (Spikes / Toxic Spikes). Also used to denote the
   // number of wishes (Wish).
   layers?: number;
