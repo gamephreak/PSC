@@ -10,8 +10,12 @@ export interface SideConditionData extends PersistentEffect<SideCondition> {
   sources?: Pokemon[];  // TODO is this necessary?
   // Positions affected by a future move (Doom Desire / Future Sight / Wish).
   positions?: {
-    [position: number]:
-        {duration: number; source?: Pokemon; move?: ID; hp?: number;}
+    [position: number]: {
+      duration: number;
+      source?: Pokemon;
+      move?: ID;
+      hp?: number;  // PERCEIVE: 1/2 of inferred source's HP stat.
+    }
   };
   // The number of layers (Spikes / Toxic Spikes). Also used to denote the
   // number of wishes (Wish).
@@ -26,7 +30,7 @@ export interface Side {
   //   - 'wait': wait for the other player's 'switch' decision
   state: 'preview'|'move'|'switch'|'wait';
   // The team of Pokemon the player for this Side brought to battle (1 - 6).
-  readonly pokemon: Readonly<Pokemon[]>;
+  readonly pokemon: Pokemon[];  // OBSERVE: not all known before switch/preview.
   // The index into pokemon of the active Pokemon (undefined for Team Preview),
   // can be of length 1-3 depending on the Battle's gameType.
   active?: [number];
