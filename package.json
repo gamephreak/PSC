@@ -1,12 +1,12 @@
 {
-  "name": "psc",
+  "name": "@pkmn.cc/state",
   "version": "0.0.1",
-  "description": "Pokémon Showdown Client",
+  "description": "Pokémon Showdown battle state-related data structures",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gamephreak/psc.git"
+    "url": "git+https://github.com/pkmn-cc/state.git"
   },
   "keywords": [
     "Pokémon"
@@ -14,7 +14,7 @@
   "author": "Kirk Scheibelhut",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gamephreak/psc/issues"
+    "url": "https://github.com/pkmn-cc/state/issues"
   },
   "dependencies": {
     "@types/node": "^10.12.18"
