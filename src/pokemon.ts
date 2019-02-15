@@ -89,7 +89,7 @@ export interface Pokemon {
   // The Pokemon's current HP (as opposed to maxHP which can be calculated).
   hp: number;  // PERCEIVE: deduce from inferred stats and percentage.
 
-  status?: Status;
+  status?: StatusData;
   volatiles?: {[id: string]: VolatileStatusData};  // PERCEIVE
 
   // The ID of the species *name* (ie. including cosmeticForme) this Pokemon

@@ -3,9 +3,10 @@ import {Format, ID} from 'pkmn';
 import {Field} from './field';
 import {Side} from './side';
 
+export type GameType = 'Singles'|'Doubles'|'Triples'|'Rotation';
 export interface Battle {
   readonly format: Format;
-  readonly gameType: 'Singles'|'Doubles'|'Triples'|'Rotation';
+  readonly gameType: GameType;
 
   readonly field: Field;
   readonly p1: Side;
@@ -13,7 +14,7 @@ export interface Battle {
 
   // The current decision state of the Battle (see Side). NOTE: Unlike with
   // Side, this can never be 'wait' as one player will be in the 'switch' state.
-  state: 'preview'|'move'|'switch';
+  state: 'team'|'move'|'switch';
 
   // The current turn number.
   turn: number;

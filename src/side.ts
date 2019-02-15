@@ -24,13 +24,13 @@ export interface SideConditionData extends PersistentEffect<SideCondition> {
 
 export interface Side {
   // The current decision state of the Side:
-  //   - 'preview': beginning of BW/XY/SM battle (Team Preview)
+  //   - 'team': beginning of BW/XY/SM battle (Team Preview)
   //   - 'move': beginning of each turn
   //   - 'switch': end of turn if fainted (or mid turn with switching effects)
   //   - 'wait': wait for the other player's 'switch' decision
-  state: 'preview'|'move'|'switch'|'wait';
+  state: 'team'|'move'|'switch'|'wait';
   // The team of Pokemon the player for this Side brought to battle (1 - 6).
-  readonly pokemon: Pokemon[];  // OBSERVE: not all known before switch/preview.
+  readonly pokemon: Pokemon[];  // OBSERVE: not all known before switch/team.
   // The index into pokemon of the active Pokemon (undefined for Team Preview),
   // can be of length 1-3 depending on the Battle's gameType.
   active?: [number];
