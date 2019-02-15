@@ -3,10 +3,8 @@ import {Format, ID} from 'pkmn';
 import {Field} from './field';
 import {Side} from './side';
 
-export type GameType = 'Singles'|'Doubles'|'Triples'|'Rotation';
 export interface Battle {
   readonly format: Format;
-  readonly gameType: GameType;
 
   readonly field: Field;
   readonly p1: Side;
