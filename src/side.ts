@@ -1,4 +1,4 @@
-import {ID, Move} from 'pkmn';
+import {ID, Move} from '@pkmn.cc/data';
 
 import {PersistentEffect} from './effect';
 import {Pokemon} from './pokemon';

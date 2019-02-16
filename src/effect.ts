@@ -1,4 +1,4 @@
-import {Format, ID} from 'pkmn';
+import {Format, ID} from '@pkmn.cc/data';
 
 import {Pokemon} from './pokemon';
 

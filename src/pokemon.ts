@@ -1,4 +1,4 @@
-import {BoostsTable, ID, PokemonSet, StatsTable, Status, Type} from 'pkmn';
+import {BoostsTable, ID, PokemonSet, StatsTable, Status, Type} from '@pkmn.cc/data';
 
 import {PersistentEffect} from './effect';
 

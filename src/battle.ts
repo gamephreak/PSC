@@ -1,4 +1,4 @@
-import {Format, ID} from 'pkmn';
+import {Format, ID} from '@pkmn.cc/data';
 
 import {Field} from './field';
 import {Side} from './side';
