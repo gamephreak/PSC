@@ -28,7 +28,8 @@ export interface Side {
   //   - 'move': beginning of each turn
   //   - 'switch': end of turn if fainted (or mid turn with switching effects)
   //   - 'wait': wait for the other player's 'switch' decision
-  state: 'team'|'move'|'switch'|'wait';
+  //   - 'done': the battle is over.
+  state: 'team'|'move'|'switch'|'wait'|'done';
   // The team of Pokemon the player for this Side brought to battle (1 - 6).
   readonly pokemon: Pokemon[];  // OBSERVE: not all known before switch/team.
   // The index into pokemon of the active Pokemon (undefined for Team Preview),

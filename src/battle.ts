@@ -12,7 +12,7 @@ export interface Battle {
 
   // The current decision state of the Battle (see Side). NOTE: Unlike with
   // Side, this can never be 'wait' as one player will be in the 'switch' state.
-  state: 'team'|'move'|'switch';
+  state: 'team'|'move'|'switch'|'done';
 
   // The current turn number.
   turn: number;
